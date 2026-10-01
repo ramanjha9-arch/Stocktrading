@@ -1,0 +1,20 @@
+# One-click-ish Render deploy: create a Blueprint from this repo, or
+# manually create a Web Service with these settings.
+services:
+  - type: web
+    name: simple-quant-stock-picker
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false        # set this in the Render dashboard, never commit it
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite
+      - key: WATCHLIST
+        value: RELIANCE,TCS,INFY,HDFCBANK,ICICIBANK,SBIN,LT,ITC,BHARTIARTL,HINDUNILVR,MARUTI,SUNPHARMA,TITAN,AXISBANK,KOTAKBANK,BAJFINANCE,ASIANPAINT,WIPRO,ULTRACEMCO,NESTLEIND
+    disk:
+      name: data
+      mountPath: /app/data   # optional: without a persistent disk, data.db resets on every redeploy
+      sizeGB: 1
